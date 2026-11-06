@@ -37,6 +37,12 @@
       f.src = url; f.allow = 'camera; clipboard-read; clipboard-write; fullscreen';
       f.title = 'ORDER';
       document.body.appendChild(f);
+      // the app asks to re-open itself ('Update now' on a new version) — only Google pages may ask
+      window.addEventListener('message', function (e) {
+        var o = ''; try { o = new URL(e.origin).hostname; } catch (_) {}
+        if (!/(^|\.)(google\.com|googleusercontent\.com)$/.test(o)) return;
+        if (e.data && e.data.locApp === 'reload') location.reload();
+      });
     }
   }
 </script>
