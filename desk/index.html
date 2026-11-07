@@ -25,7 +25,10 @@
 <script>
   // ?a=<script id>          → full screen inside this page (default)   (#<id> also works)
   // ?a=<script id>!direct   → go straight to the Google page (fallback if the frame is blocked)
-  var h = decodeURIComponent((new URLSearchParams(location.search).get('a')) || location.hash.slice(1)), direct = /!direct$/.test(h);
+  // Android opens the installed app without ?a= → keep the address on this device the first time it is seen
+  var KEY = 'loc_a_' + location.pathname, given = (new URLSearchParams(location.search).get('a')) || location.hash.slice(1);
+  try { if (given) localStorage.setItem(KEY, given); else given = localStorage.getItem(KEY) || ''; } catch (e) {}
+  var h = decodeURIComponent(given || ''), direct = /!direct$/.test(h);
   var id = h.replace(/!direct$/, '').trim();
   var m = id.match(/\/macros\/s\/([\w-]+)/); if (m) id = m[1];   // whole /exec address pasted → keep only the id
   if (!/^[\w-]{20,}$/.test(id)) {
