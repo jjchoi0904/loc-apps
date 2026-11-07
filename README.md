@@ -5,3 +5,4 @@ The Apps Script web-app id is added after `#` on each iPad when the icon is adde
 - `delivery/` — DELIVERY (LIQUORLAND DELIVERY staff app · CH4 · icon from liquorland-delivery delivery/_assets)
 
 Both pages re-open themselves when the app sends `{locApp:'reload'}` (new version → Update now). Only google.com / googleusercontent.com may send it.
+- `wholesale/` — WHOLESALE (LOC Wholesale shop app · CH2 · R-128)
