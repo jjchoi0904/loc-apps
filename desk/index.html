@@ -28,7 +28,8 @@
   // Android opens the installed app without ?a= → keep the address on this device the first time it is seen
   var KEY = 'loc_a_' + location.pathname, given = (new URLSearchParams(location.search).get('a')) || location.hash.slice(1);
   try { if (given) localStorage.setItem(KEY, given); else given = localStorage.getItem(KEY) || ''; } catch (e) {}
-  var h = decodeURIComponent(given || ''), direct = /!direct$/.test(h);
+  // Order Desk needs Jin's Google login → a frame here gets 401 (browsers block Google sign-in inside other sites) → always go straight to the Google page
+  var h = decodeURIComponent(given || ''), direct = true;
   var id = h.replace(/!direct$/, '').trim();
   var m = id.match(/\/macros\/s\/([\w-]+)/); if (m) id = m[1];   // whole /exec address pasted → keep only the id
   if (!/^[\w-]{20,}$/.test(id)) {
