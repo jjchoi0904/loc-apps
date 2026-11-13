@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- LOC MASTER launcher (Master Desk · Jin only · R-163) · home-screen icon + full screen. No code or secrets here:
+     the app address comes from the ?a= part when Jin adds it to the Home Screen. -->
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>MASTER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MASTER">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#3B2A6B">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="master-180.png?v=1">
+<link rel="icon" href="master-180.png?v=1"><link rel="apple-touch-icon" sizes="512x512" href="master-512.png?v=1">
+<style>
+  html,body{margin:0;height:100%;background:#3B2A6B;overflow:hidden;font-family:-apple-system,system-ui,sans-serif}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#E9E7E1}
+  .msg{color:#fff;padding:40px 24px;text-align:center;font-size:17px;line-height:1.5}
+  .msg b{display:block;font-size:24px;margin-bottom:8px}
+  .msg a{color:#7EE2A8}
+</style>
+</head><body>
+<script>
+  // ?a=<script id>          → full screen inside this page (default)   (#<id> also works)
+  // ?a=<script id>!direct   → go straight to the Google page (fallback if the frame is blocked)
+  // Android opens the installed app without ?a= → keep the address on this device the first time it is seen
+  var KEY = 'loc_a_' + location.pathname, given = (new URLSearchParams(location.search).get('a')) || location.hash.slice(1);
+  try { if (given) localStorage.setItem(KEY, given); else given = localStorage.getItem(KEY) || ''; } catch (e) {}
+  // Master Desk uses its own PIN (no Google login) → open full screen inside this page again · '!direct' still goes straight
+  var h = decodeURIComponent(given || ''), direct = /!direct$/.test(h);
+  var id = h.replace(/!direct$/, '').trim();
+  var m = id.match(/\/macros\/s\/([\w-]+)/); if (m) id = m[1];   // whole /exec address pasted → keep only the id
+  if (!/^[\w-]{20,}$/.test(id)) {
+    document.body.innerHTML = '<div class="msg"><b>MASTER</b>App address missing.<br>Ask the office to set up this icon again.</div>';
+  } else {
+    var url = 'https://script.google.com/macros/s/' + id + '/exec';
+    if (direct) location.replace(url);
+    else {
+      var f = document.createElement('iframe');
+      f.src = url; f.allow = 'camera; clipboard-read; clipboard-write; fullscreen';
+      f.title = 'MASTER';
+      document.body.appendChild(f);
+      // the app asks to re-open itself ('Update now' on a new version) — only Google pages may ask
+      window.addEventListener('message', function (e) {
+        var o = ''; try { o = new URL(e.origin).hostname; } catch (_) {}
+        if (!/(^|\.)(google\.com|googleusercontent\.com)$/.test(o)) return;
+        if (e.data && e.data.locApp === 'reload') location.reload();
+      });
+    }
+  }
+</script>
+</body></html>
