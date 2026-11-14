@@ -2,8 +2,8 @@
  "name": "LOC WHOLESALE",
  "short_name": "WHOLESALE",
  "display": "standalone",
- "background_color": "#141821",
- "theme_color": "#141821",
+ "background_color": "#F5F5F7",
+ "theme_color": "#F5F5F7",
  "icons": [
   {
    "src": "wholesale-192.png?v=3",
