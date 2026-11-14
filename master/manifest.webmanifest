@@ -2,8 +2,8 @@
  "name": "LOC MASTER",
  "short_name": "MASTER",
  "display": "standalone",
- "background_color": "#3B2A6B",
- "theme_color": "#3B2A6B",
+ "background_color": "#F5F5F7",
+ "theme_color": "#F5F5F7",
  "icons": [
   {
    "src": "master-192.png?v=1",

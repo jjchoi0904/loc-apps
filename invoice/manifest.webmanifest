@@ -2,8 +2,8 @@
  "name": "LOC INVOICE",
  "short_name": "INVOICE",
  "display": "standalone",
- "background_color": "#12603A",
- "theme_color": "#12603A",
+ "background_color": "#F5F5F7",
+ "theme_color": "#F5F5F7",
  "icons": [
   {
    "src": "invoice-192.png?v=1",
