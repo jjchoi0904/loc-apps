@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- LOC SCHEDULE launcher (Schedule Desk · Jin only · CH3 · 11/23 · same web app as Payroll + ?app=schedule · paste the same Payroll app address) · Google login (web app = Only myself) · shows 'Open directly' if the app does not open inside this page · home-screen icon + full screen. v13 light (status bar = app background #F5F5F7 · R-177 · 11/14). No code or secrets here:
+     the app address comes from the ?a= part when Jin adds it to the Home Screen. -->
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>SCHEDULE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SCHEDULE">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F5F5F7">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="schedule-180.png?v=1">
+<link rel="apple-touch-icon" sizes="512x512" href="schedule-512.png?v=1">
+<link rel="icon" type="image/png" sizes="32x32" href="schedule-32.png?v=1">
+<link rel="icon" type="image/png" sizes="64x64" href="schedule-64.png?v=1">
+<style>
+  html,body{margin:0;height:100%;background:#F5F5F7;overflow:hidden;font-family:-apple-system,system-ui,sans-serif}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#F5F5F7}
+  .msg{color:#1D1D1F;padding:40px 24px;text-align:center;font-size:17px;line-height:1.5}
+  .msg b{display:block;font-size:24px;margin-bottom:8px}
+  .msg a{color:#007AFF}
+  .msg form{display:flex;gap:8px;max-width:560px;margin:18px auto 0}
+  .msg input{flex:1;min-width:0;font:inherit;font-size:16px;padding:11px 12px;border:1px solid #C7C7CC;border-radius:10px;background:#fff;color:#1D1D1F}
+  .msg button{font:inherit;font-size:16px;font-weight:600;padding:11px 18px;border:0;border-radius:10px;background:#007AFF;color:#fff}
+  #ea{color:#D70015;font-size:15px;margin-top:10px;min-height:20px}
+  #fb{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:9;display:none;align-items:center;gap:12px;background:#fff;color:#1D1D1F;border:1px solid #E5E5EA;border-radius:12px;padding:10px 14px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+  #fb a{background:#007AFF;color:#fff;text-decoration:none;font-weight:600;padding:7px 12px;border-radius:8px}
+  #fb button{border:0;background:none;color:#8E8E93;font-size:18px;padding:0 2px}
+</style>
+</head><body>
+<script>
+  // ?a=<script id>          → full screen inside this page (default)   (#<id> also works)
+  // ?a=<script id>!direct   → go straight to the Google page (fallback if the frame is blocked)
+  // Android opens the installed app without ?a= → keep the address on this device the first time it is seen
+  var KEY = 'loc_a_' + location.pathname, given = (new URLSearchParams(location.search).get('a')) || location.hash.slice(1);
+  try { if (given) localStorage.setItem(KEY, given); else given = localStorage.getItem(KEY) || ''; } catch (e) {}
+  // Payroll Desk = Google login (Only myself) → try full screen inside this page; if the app does not say 'ready' in 8 s, show 'Open directly'
+  var h = decodeURIComponent(given || ''), direct = /!direct$/.test(h);
+  var id = h.replace(/!direct$/, '').trim();
+  var m = id.match(/\/macros\/s\/([\w-]+)/); if (m) id = m[1];   // whole /exec address pasted → keep only the id
+  if (!/^[\w-]{20,}$/.test(id)) {
+    // R-178 (11/14): no address on this device → paste it here (no need to ask anyone) · kept on this device + put back into the address bar
+    document.body.innerHTML = '<div class="msg"><b>SCHEDULE</b>App address missing on this device.<br>Paste the Payroll app address (the web app link that ends with /exec) — Schedule uses the same one:<form id="fa" autocomplete="off"><input id="ia" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec" aria-label="App address"><button type="submit">Open</button></form><div id="ea" role="alert"></div></div>';
+    document.getElementById('fa').onsubmit = function (ev) {
+      ev.preventDefault();
+      var v = document.getElementById('ia').value.trim(), mm = v.match(/\/macros\/s\/([\w-]+)/), x = mm ? mm[1] : v;
+      if (!/^[\w-]{20,}$/.test(x)) { document.getElementById('ea').textContent = 'That is not an app address — copy the web app link (it ends with /exec).'; return; }
+      try { localStorage.setItem(KEY, x); } catch (e) {}
+      location.replace(location.pathname + '?a=' + encodeURIComponent(x));
+    };
+  } else {
+    var url = 'https://script.google.com/macros/s/' + id + '/exec?app=schedule';
+    if (direct) location.replace(url);
+    else {
+      // R-178: put ?a=<id> back into the address bar (screen does not change) → a bookmark or share made now always carries the address
+      try { if (new URLSearchParams(location.search).get('a') !== id) history.replaceState(null, '', location.pathname + '?a=' + encodeURIComponent(id)); } catch (e) {}
+      var f = document.createElement('iframe');
+      f.src = url; f.allow = 'camera; clipboard-read; clipboard-write; fullscreen';
+      f.title = 'SCHEDULE';
+      document.body.appendChild(f);
+      // the app asks to re-open itself ('Update now' on a new version) — only Google pages may ask
+      window.addEventListener('message', function (e) {
+        var o = ''; try { o = new URL(e.origin).hostname; } catch (_) {}
+        if (!/(^|\.)(google\.com|googleusercontent\.com)$/.test(o)) return;
+        if (e.data && e.data.locApp === 'reload') location.reload();
+        if (e.data && e.data.locApp === 'ready') { ready = true; fb.style.display = 'none'; }
+      });
+      // Google login blocked inside the frame (Safari · not signed in · other Google account) → offer the Google page itself
+      var ready = false, fb = document.createElement('div'); fb.id = 'fb';
+      fb.innerHTML = '<span>Schedule not opening here?</span><a href="' + url + '">Open directly</a><button type="button" aria-label="Close">×</button>';
+      fb.querySelector('button').onclick = function () { fb.style.display = 'none'; };
+      document.body.appendChild(fb);
+      setTimeout(function () { if (!ready) fb.style.display = 'flex'; }, 8000);
+    }
+  }
+</script>
+</body></html>
