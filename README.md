@@ -9,3 +9,4 @@ Both pages re-open themselves when the app sends `{locApp:'reload'}` (new versio
 - `desk/` — DESK (LIQUOR Order Desk · Jin only · CH1 · icon from order-liquor/_assets · R-130)
 - `payroll/` — PAYROLL (Payroll Desk · Jin only · CH3 · R-241 · Google login · icon from liquorland-delivery payroll/_assets)
 - `schedule/` — SCHEDULE (Schedule Desk · Jin only · CH3 · same web app as PAYROLL with ?app=schedule · icon from liquorland-delivery payroll/_assets)
+- `reports/` — REPORTS (Reports app · Sales tab · Jin only · CH1 · Google login · icon from liquorland-delivery sales-report/_assets)
